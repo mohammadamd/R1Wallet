@@ -16,10 +16,13 @@ func NewRedisConsumer(repository *repositories.Repository) *redisConsumer {
 }
 
 func (r *redisConsumer) Consume(messages chan<- string, channelName string) {
-	ch := r.repository.Redis.SubscribeChannel(channelName)
-	for m := range ch {
-		fmt.Println("new Message received: ", m)
-		fmt.Println("message payload: ", m.Payload)
-		messages <- m.Payload
+	for {
+		ch, err := r.repository.Redis.Dequeue(channelName)
+		if err != nil {
+			fmt.Println("could not dequeue from redis", err)
+			continue
+		}
+
+		messages <- ch
 	}
 }

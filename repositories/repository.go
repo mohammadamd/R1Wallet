@@ -12,7 +12,11 @@ type Wallet interface {
 }
 
 type Redis interface {
-	SubscribeChannel(channelName string) <-chan *redis.Message
+	Dequeue(queueName string) (string, error)
+	Enqueue(message []byte, queueName string) error
+	Increase(key string) error
+	SetValue(key string, value interface{}) error
+	GetValue(key string) (string, error)
 }
 
 type Repository struct {
@@ -22,7 +26,7 @@ type Repository struct {
 
 func NewRepository(db *sql.DB, re *redis.Client) *Repository {
 	return &Repository{
-		Wallet: &r1WalletRepository{db: db},
-		Redis:  &redisRepository{client:re},
+		Wallet: NewR1WalletRepository(db),
+		Redis:  NewRedisRepository(re),
 	}
 }

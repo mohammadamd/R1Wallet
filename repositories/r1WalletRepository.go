@@ -19,6 +19,12 @@ type r1WalletRepository struct {
 	db *sql.DB
 }
 
+func NewR1WalletRepository(db *sql.DB) *r1WalletRepository {
+	return &r1WalletRepository{
+		db: db,
+	}
+}
+
 func (r1 *r1WalletRepository) GetBalanceByUserID(ID int) (int, error) {
 	r, err := r1.db.Query(getBalanceQuery, ID)
 	if err != nil {
