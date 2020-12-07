@@ -43,6 +43,6 @@ func initializeHttpServer(handler *handler.BaseHandler) {
 
 func initializeStreamServer(service *services.Services, config *config.ConfiguredApp, handler *handler.BaseHandler) {
 	ch := make(chan string)
-	go service.Consumer.Consume(ch, config.Config.App.IncreaseChannelName)
+	go service.Consumer.Consume(ch, config.Config.App.ComQueueName)
 	handler.Credit.HandleIncreaseRequestFromChannel(ch)
 }
